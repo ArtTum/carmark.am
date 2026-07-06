@@ -1,0 +1,5 @@
+.design-source/
+storage/data.json
+storage/*.tmp
+*.log
+.idea
