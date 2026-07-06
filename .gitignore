@@ -1,5 +1,12 @@
 .design-source/
-storage/data.json
-storage/*.tmp
+.idea/
+/assets/
+/backend/vendor/
+/backend/node_modules/
+/backend/.env
+/backend/database/database.sqlite
+/backend/storage/*.key
+/frontend/node_modules/
+/frontend/.nuxt/
+/frontend/.output/
 *.log
-.idea

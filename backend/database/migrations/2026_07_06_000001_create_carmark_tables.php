@@ -48,9 +48,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->string('starts_in')->nullable();
-            $table->unsignedInteger('cars_count')->default(0);
-            $table->unsignedInteger('fee')->default(0);
+            $table->string('country')->default('USA');
+            $table->dateTime('starts_at')->nullable();
+            $table->unsignedInteger('lots_count')->default(0);
+            $table->unsignedInteger('buyer_fee')->default(0);
             $table->string('image')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
@@ -105,4 +106,3 @@ return new class extends Migration
         Schema::dropIfExists('vehicles');
     }
 };
-

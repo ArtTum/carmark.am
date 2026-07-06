@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Auction extends Model
 {
-    protected $fillable = ['name', 'address', 'starts_in', 'cars_count', 'fee', 'image', 'active'];
+    protected $fillable = ['name', 'address', 'country', 'starts_at', 'lots_count', 'buyer_fee', 'image', 'active'];
 
     protected function casts(): array
     {
-        return ['active' => 'boolean'];
+        return [
+            'starts_at' => 'datetime',
+            'active' => 'boolean',
+        ];
     }
 }
-
