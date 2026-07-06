@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+if (PHP_SAPI === 'cli-server') {
+    $requested = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+    $file = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, $requested);
+    if (is_file($file)) {
+        return false;
+    }
+}
+
 require __DIR__ . '/app/app.php';
 require __DIR__ . '/app/render.php';
 
