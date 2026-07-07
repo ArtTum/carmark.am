@@ -46,6 +46,10 @@ onMounted(async () => {
           <input v-model="form.password" type="password" autocomplete="current-password" required>
         </label>
 
+        <NuxtLink class="auth-forgot-link" :to="{ path: `/${lang}/forgot-password`, query: form.email ? { email: form.email } : {} }">
+          Մոռացե՞լ եք գաղտնաբառը
+        </NuxtLink>
+
         <p v-if="error" class="form-error">{{ error }}</p>
         <button class="btn primary full" type="submit" :disabled="pending">
           {{ pending ? 'Խնդրում ենք սպասել...' : 'Մուտք գործել' }}

@@ -8,6 +8,7 @@ use App\Models\UserAuthToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -95,6 +96,71 @@ class AuthController extends Controller
         return response()->json($this->tokenPayload($user->fresh()));
     }
 
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:160'],
+        ]);
+
+        $email = strtolower($data['email']);
+        $user = User::query()->where('email', $email)->first();
+        $plainToken = null;
+
+        if ($user) {
+            $plainToken = Str::random(64);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $email],
+                [
+                    'token_hash' => hash('sha256', $plainToken),
+                    'expires_at' => now()->addMinutes(30),
+                    'created_at' => now(),
+                ],
+            );
+        }
+
+        return response()->json([
+            'message' => 'If this email exists, password reset instructions have been sent.',
+            'email' => $email,
+            'reset_url' => $plainToken
+                ? $this->resetUrl($request, $email, $plainToken)
+                : null,
+        ]);
+    }
+
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:160'],
+            'token' => ['required', 'string'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
+
+        $email = strtolower($data['email']);
+        $reset = DB::table('password_reset_tokens')->where('email', $email)->first();
+
+        if (
+            !$reset
+            || !hash_equals($reset->token_hash, hash('sha256', $data['token']))
+            || now()->greaterThan($reset->expires_at)
+        ) {
+            return response()->json(['message' => 'Password reset link is invalid or expired.'], 422);
+        }
+
+        $user = User::query()->where('email', $email)->first();
+
+        if (!$user) {
+            DB::table('password_reset_tokens')->where('email', $email)->delete();
+            return response()->json(['message' => 'Password reset link is invalid or expired.'], 422);
+        }
+
+        $user->update(['password' => $data['password']]);
+        $user->authTokens()->delete();
+        DB::table('password_reset_tokens')->where('email', $email)->delete();
+
+        return response()->json(['message' => 'Password has been reset.']);
+    }
+
     private function tokenPayload(User $user): array
     {
         $plainToken = Str::random(64);
@@ -141,5 +207,13 @@ class AuthController extends Controller
             'name' => $user->name,
             'email' => $user->email,
         ];
+    }
+
+    private function resetUrl(Request $request, string $email, string $plainToken): string
+    {
+        $frontend = rtrim((string) ($request->headers->get('origin') ?: config('app.frontend_url')), '/');
+        $baseUrl = $frontend !== '' ? $frontend : $request->getSchemeAndHttpHost();
+
+        return $baseUrl . '/hy/reset-password?email=' . urlencode($email) . '&token=' . urlencode($plainToken);
     }
 }

@@ -96,6 +96,30 @@ export function useAuth() {
     }
   }
 
+  async function forgotPassword(email: string) {
+    pending.value = true;
+    try {
+      return await $fetch<{ message: string; email: string; reset_url: string | null }>(apiUrl('/auth/forgot-password'), {
+        method: 'POST',
+        body: { email },
+      });
+    } finally {
+      pending.value = false;
+    }
+  }
+
+  async function resetPassword(payload: { email: string; token: string; password: string; password_confirmation: string }) {
+    pending.value = true;
+    try {
+      return await $fetch<{ message: string }>(apiUrl('/auth/reset-password'), {
+        method: 'POST',
+        body: payload,
+      });
+    } finally {
+      pending.value = false;
+    }
+  }
+
   async function updateProfile(payload: { name: string; email: string }) {
     if (!token.value) throw new Error('Unauthorized');
     const response = await $fetch<{ user: AuthUser }>(apiUrl('/auth/profile'), {
@@ -144,6 +168,8 @@ export function useAuth() {
     initAuth,
     login,
     register,
+    forgotPassword,
+    resetPassword,
     updateProfile,
     updatePassword,
     logout,
