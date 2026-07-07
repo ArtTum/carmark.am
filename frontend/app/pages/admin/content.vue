@@ -1,13 +1,16 @@
 <script setup lang="ts">
 const pages = ref<any[]>([]);
 const active = ref<any>(null);
+const bodyJson = ref('{}');
 const notice = ref('');
+const error = ref('');
+const saving = ref(false);
 
 async function loadPages() {
   try {
     const response = await adminFetch('/admin/pages');
     pages.value = response.data || [];
-    active.value ||= pages.value[0] ? JSON.parse(JSON.stringify(pages.value[0])) : null;
+    if (!active.value && pages.value[0]) editPage(pages.value[0]);
   } catch {
     await navigateTo('/admin/login');
   }
@@ -15,16 +18,42 @@ async function loadPages() {
 
 function editPage(page: any) {
   active.value = JSON.parse(JSON.stringify(page));
+  active.value.title ||= { en: '', hy: '', ru: '' };
+  active.value.body ||= {};
+  const normalizedBody = Array.isArray(active.value.body) && active.value.body.length === 0 ? {} : active.value.body;
+  bodyJson.value = JSON.stringify(normalizedBody, null, 2);
   notice.value = '';
+  error.value = '';
 }
 
 async function savePage() {
-  await adminFetch(`/admin/pages/${active.value.id}`, {
-    method: 'PUT',
-    body: { title: active.value.title, body: active.value.body },
-  });
-  notice.value = 'Page saved.';
-  await loadPages();
+  if (!active.value) return;
+
+  let parsedBody = {};
+
+  try {
+    parsedBody = JSON.parse(bodyJson.value || '{}');
+  } catch {
+    error.value = 'Page body JSON is invalid.';
+    return;
+  }
+
+  saving.value = true;
+  notice.value = '';
+  error.value = '';
+
+  try {
+    await adminFetch(`/admin/pages/${active.value.id}`, {
+      method: 'PUT',
+      body: { title: active.value.title, body: parsedBody },
+    });
+    notice.value = 'Page saved.';
+    await loadPages();
+  } catch (exception: any) {
+    error.value = exception?.data?.message || 'Unable to save page.';
+  } finally {
+    saving.value = false;
+  }
 }
 
 onMounted(loadPages);
@@ -41,7 +70,7 @@ onMounted(loadPages);
             <tr v-for="page in pages" :key="page.id">
               <td>{{ page.slug }}</td>
               <td>{{ page.title?.en }}</td>
-              <td><button class="btn ghost small" @click="editPage(page)">Edit</button></td>
+              <td><button class="btn ghost small" type="button" @click="editPage(page)">Edit</button></td>
             </tr>
           </tbody>
         </table>
@@ -51,10 +80,12 @@ onMounted(loadPages);
         <label><span>Title EN</span><input v-model="active.title.en"></label>
         <label><span>Title HY</span><input v-model="active.title.hy"></label>
         <label><span>Title RU</span><input v-model="active.title.ru"></label>
-        <label><span>Body EN</span><textarea v-model="active.body.en" rows="5"></textarea></label>
-        <label><span>Body HY</span><textarea v-model="active.body.hy" rows="5"></textarea></label>
-        <label><span>Body RU</span><textarea v-model="active.body.ru" rows="5"></textarea></label>
-        <button class="btn primary full">Save page</button>
+        <label>
+          <span>Body JSON</span>
+          <textarea v-model="bodyJson" rows="18" spellcheck="false"></textarea>
+        </label>
+        <button class="btn primary full" :disabled="saving">{{ saving ? 'Saving...' : 'Save page' }}</button>
+        <p v-if="error" class="form-error">{{ error }}</p>
         <p v-if="notice" class="success-note">{{ notice }}</p>
       </form>
     </div>

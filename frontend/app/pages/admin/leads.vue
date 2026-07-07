@@ -1,5 +1,8 @@
 <script setup lang="ts">
 const leads = ref<any[]>([]);
+const updatingLeadId = ref<number | null>(null);
+const notice = ref('');
+const error = ref('');
 
 async function loadLeads() {
   try {
@@ -11,10 +14,22 @@ async function loadLeads() {
 }
 
 async function updateStatus(lead: any) {
-  await adminFetch(`/admin/leads/${lead.id}`, {
-    method: 'PATCH',
-    body: { status: lead.status },
-  });
+  updatingLeadId.value = lead.id;
+  notice.value = '';
+  error.value = '';
+
+  try {
+    await adminFetch(`/admin/leads/${lead.id}`, {
+      method: 'PATCH',
+      body: { status: lead.status },
+    });
+    notice.value = 'Lead status updated.';
+  } catch (exception: any) {
+    error.value = exception?.data?.message || 'Unable to update lead.';
+    await loadLeads();
+  } finally {
+    updatingLeadId.value = null;
+  }
 }
 
 onMounted(loadLeads);
@@ -23,6 +38,8 @@ onMounted(loadLeads);
 <template>
   <AdminShell title="Leads">
     <section class="content-panel">
+      <p v-if="error" class="form-error">{{ error }}</p>
+      <p v-if="notice" class="success-note">{{ notice }}</p>
       <table class="admin-table">
         <thead><tr><th>Customer</th><th>Vehicle</th><th>Message</th><th>Status</th></tr></thead>
         <tbody>
@@ -31,7 +48,7 @@ onMounted(loadLeads);
             <td>{{ lead.vehicle?.make }} {{ lead.vehicle?.model }}<br><span class="muted">{{ lead.type }}</span></td>
             <td>{{ lead.message }}</td>
             <td>
-              <select v-model="lead.status" @change="updateStatus(lead)">
+              <select v-model="lead.status" :disabled="updatingLeadId === lead.id" @change="updateStatus(lead)">
                 <option>new</option>
                 <option>contacted</option>
                 <option>won</option>

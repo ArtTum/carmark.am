@@ -1,44 +1,63 @@
 <script setup lang="ts">
+const t = useT();
 const lang = useLang();
-const { data } = await useFetch<any>(apiUrl('/site'));
-const settings = computed(() => data.value?.settings || {});
+const settings = useSiteSettings();
+const footer = computed(() => settings.value.footer || {});
+
 const footerAddress = computed(() => localize(settings.value.address || {}) || 'Երևան, Խանջյան 41');
 const footerEmail = computed(() => settings.value.email || 'info@carmark.am');
 const footerPhone = computed(() => settings.value.phone || '+374 968301');
 
-const companyLinks = [
-  { label: 'Գլխավոր', to: '/', active: true },
-  { label: 'Մեր մասին', to: '/about' },
-  { label: 'Ծառայություններ', to: '/services' },
-  { label: 'Ինչպես գնել', to: '/how-to-buy' },
-];
+const fallbackColumns = computed(() => [
+  {
+    title: t('nav.company'),
+    links: [
+      { label: 'Գլխավոր', to: '/' },
+      { label: t('nav.about'), to: '/about' },
+      { label: t('nav.services'), to: '/services' },
+      { label: t('nav.how'), to: '/how-to-buy' },
+    ],
+  },
+  {
+    title: 'Մեքենաներ',
+    links: [
+      { label: 'Ավտոմեքենաներ', to: '/inventory' },
+      { label: 'Մոտոցիկլետներ', to: '/inventory?vehicle=motorcycle' },
+      { label: 'Բեռնատարներ', to: '/inventory?vehicle=truck' },
+      { label: 'Ավտոբուսներ', to: '/inventory?vehicle=bus' },
+    ],
+  },
+  {
+    title: t('nav.auctions'),
+    links: [
+      { label: 'Ընթացիկ', to: '/auctions' },
+      { label: 'Սպասվող', to: '/auctions?status=upcoming' },
+      { label: t('nav.inventory'), to: '/inventory?private_sale=1' },
+      { label: 'Գնել հիմա', to: '/inventory?buy_now=1' },
+    ],
+  },
+  {
+    title: 'Աջակցություն',
+    links: [
+      { label: t('nav.contact'), to: '/contact' },
+      { label: t('nav.calculator'), to: '/calculator' },
+      { label: 'FAQs', to: '/faqs' },
+    ],
+  },
+]);
 
-const vehicleLinks = [
-  { label: 'Ավտոմեքենաներ', to: '/inventory' },
-  { label: 'Մոտոցիկլետներ', to: '/inventory?vehicle=motorcycle' },
-  { label: 'Բեռնատարներ', to: '/inventory?vehicle=truck' },
-  { label: 'Ավտոբուսներ', to: '/inventory?vehicle=bus' },
-];
+const columns = computed(() => footer.value.columns || fallbackColumns.value);
 
-const auctionLinks = [
-  { label: 'Ընթացիկ', to: '/auctions' },
-  { label: 'Ապագա', to: '/auctions?status=upcoming' },
-  { label: 'Առկա տեսականի', to: '/inventory' },
-];
-
-const supportLinks = [
-  { label: 'Կապ մեզ հետ', to: '/contact' },
-  { label: 'Հաշվիչ', to: '/calculator' },
-  { label: 'FAQs', to: '/faqs' },
-];
-
-const socialLinks = [
+const socialLinks = computed(() => footer.value.social_links || [
   { label: 'Facebook', icon: 'facebook', href: '#' },
   { label: 'Instagram', icon: 'instagram', href: '#' },
   { label: 'Youtube', icon: 'youtube', href: '#' },
-];
+]);
 
-const localizedTo = (to: string) => `/${lang}${to}`;
+const localizedTo = (to: string) => `/${lang.value}${to}`;
+const footerLabel = (item: any) => item?.label_key ? t(item.label_key) : localize(item?.label) || item?.label || '';
+const footerTitle = (column: any) => column?.title_key ? t(column.title_key) : localize(column?.title) || column?.title || '';
+const copyrightText = computed(() => localize(footer.value.copyright) || t('footer.rights'));
 </script>
 
 <template>
@@ -53,36 +72,10 @@ const localizedTo = (to: string) => `/${lang}${to}`;
         </div>
       </div>
 
-      <nav class="footer-col" aria-label="Ընկերություն">
-        <h3>Ընկերություն</h3>
-        <NuxtLink
-          v-for="item in companyLinks"
-          :key="item.label"
-          :to="localizedTo(item.to)"
-          :class="{ 'is-active': item.active }"
-        >
-          {{ item.label }}
-        </NuxtLink>
-      </nav>
-
-      <nav class="footer-col" aria-label="Մեքենաներ">
-        <h3>Մեքենաներ</h3>
-        <NuxtLink v-for="item in vehicleLinks" :key="item.label" :to="localizedTo(item.to)">
-          {{ item.label }}
-        </NuxtLink>
-      </nav>
-
-      <nav class="footer-col" aria-label="Աճուրդներ">
-        <h3>Աճուրդներ</h3>
-        <NuxtLink v-for="item in auctionLinks" :key="item.label" :to="localizedTo(item.to)">
-          {{ item.label }}
-        </NuxtLink>
-      </nav>
-
-      <nav class="footer-col" aria-label="Աջակցություն">
-        <h3>Աջակցություն</h3>
-        <NuxtLink v-for="item in supportLinks" :key="item.label" :to="localizedTo(item.to)">
-          {{ item.label }}
+      <nav v-for="column in columns" :key="footerTitle(column)" class="footer-col" :aria-label="footerTitle(column)">
+        <h3>{{ footerTitle(column) }}</h3>
+        <NuxtLink v-for="item in column.links" :key="item.to" :to="localizedTo(item.to)">
+          {{ footerLabel(item) }}
         </NuxtLink>
       </nav>
 
@@ -112,8 +105,9 @@ const localizedTo = (to: string) => `/${lang}${to}`;
         </div>
       </nav>
     </div>
+
     <div class="container footer-bottom">
-      <span>@2023 Բոլոր իրավունքները պաշտպանված են</span>
+      <span>@{{ footer.copyright_year || 2023 }} {{ copyrightText }}</span>
     </div>
   </footer>
 </template>

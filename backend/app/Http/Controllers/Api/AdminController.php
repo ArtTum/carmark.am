@@ -102,6 +102,8 @@ class AdminController extends Controller
 
     public function pages(): JsonResponse
     {
+        $this->ensureDefaultPages();
+
         return response()->json(['data' => Page::query()->orderBy('slug')->get()]);
     }
 
@@ -182,5 +184,19 @@ class AdminController extends Controller
             ]);
         }
     }
-}
 
+    private function ensureDefaultPages(): void
+    {
+        foreach ([
+            ['slug' => 'home', 'title' => ['hy' => 'Գլխավոր', 'en' => 'Home', 'ru' => 'Главная'], 'body' => []],
+            ['slug' => 'about', 'title' => ['hy' => 'Մեր մասին', 'en' => 'About us', 'ru' => 'О нас'], 'body' => []],
+            ['slug' => 'services', 'title' => ['hy' => 'Ծառայություններ', 'en' => 'Services', 'ru' => 'Услуги'], 'body' => []],
+            ['slug' => 'how-to-buy', 'title' => ['hy' => 'Ինչպես գնել', 'en' => 'How to buy', 'ru' => 'Как купить'], 'body' => []],
+            ['slug' => 'contact', 'title' => ['hy' => 'Կապ մեզ հետ', 'en' => 'Contact', 'ru' => 'Контакты'], 'body' => []],
+            ['slug' => 'faqs', 'title' => ['hy' => 'Հաճախ տրվող հարցեր', 'en' => 'FAQs', 'ru' => 'FAQ'], 'body' => []],
+            ['slug' => 'calculator', 'title' => ['hy' => 'Հաշվիչ', 'en' => 'Calculator', 'ru' => 'Калькулятор'], 'body' => []],
+        ] as $page) {
+            Page::query()->firstOrCreate(['slug' => $page['slug']], $page);
+        }
+    }
+}

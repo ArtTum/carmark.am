@@ -2,6 +2,7 @@
 const vehicles = ref<any[]>([]);
 const saving = ref(false);
 const notice = ref('');
+const error = ref('');
 
 const emptyVehicle = () => ({
   id: null,
@@ -42,8 +43,12 @@ async function loadVehicles() {
   }
 }
 
-function resetForm() {
+function resetForm(clearFeedback = true) {
   Object.assign(form, emptyVehicle());
+  if (clearFeedback) {
+    notice.value = '';
+    error.value = '';
+  }
 }
 
 function editVehicle(vehicle: any) {
@@ -74,13 +79,17 @@ function vehiclePayload() {
 async function saveVehicle() {
   saving.value = true;
   notice.value = '';
+  error.value = '';
   const endpoint = form.id ? `/admin/vehicles/${form.id}` : '/admin/vehicles';
   const method = form.id ? 'PUT' : 'POST';
   try {
     await adminFetch(endpoint, { method, body: vehiclePayload() });
-    notice.value = form.id ? 'Vehicle updated.' : 'Vehicle created.';
-    resetForm();
+    const message = form.id ? 'Vehicle updated.' : 'Vehicle created.';
+    resetForm(false);
+    notice.value = message;
     await loadVehicles();
+  } catch (exception: any) {
+    error.value = exception?.data?.message || 'Unable to save vehicle.';
   } finally {
     saving.value = false;
   }
@@ -88,8 +97,16 @@ async function saveVehicle() {
 
 async function deleteVehicle(vehicle: any) {
   if (!confirm(`Delete ${vehicle.make} ${vehicle.model}?`)) return;
-  await adminFetch(`/admin/vehicles/${vehicle.id}`, { method: 'DELETE' });
-  await loadVehicles();
+  notice.value = '';
+  error.value = '';
+
+  try {
+    await adminFetch(`/admin/vehicles/${vehicle.id}`, { method: 'DELETE' });
+    notice.value = 'Vehicle deleted.';
+    await loadVehicles();
+  } catch (exception: any) {
+    error.value = exception?.data?.message || 'Unable to delete vehicle.';
+  }
 }
 
 onMounted(loadVehicles);
@@ -104,7 +121,7 @@ onMounted(loadVehicles);
             <p class="eyebrow">{{ vehicles.length }} records</p>
             <h2>Inventory</h2>
           </div>
-          <button class="btn ghost small" @click="resetForm">New</button>
+          <button class="btn ghost small" type="button" @click="resetForm">New</button>
         </div>
         <table class="admin-table">
           <thead><tr><th>Car</th><th>Auction</th><th>Price</th><th>Status</th><th></th></tr></thead>
@@ -115,8 +132,8 @@ onMounted(loadVehicles);
               <td>{{ money(vehicle.current_bid) }}</td>
               <td><span class="badge">{{ vehicle.status }}</span></td>
               <td class="admin-actions">
-                <button class="btn ghost small" @click="editVehicle(vehicle)">Edit</button>
-                <button class="btn ghost small" @click="deleteVehicle(vehicle)">Delete</button>
+                <button class="btn ghost small" type="button" @click="editVehicle(vehicle)">Edit</button>
+                <button class="btn ghost small" type="button" @click="deleteVehicle(vehicle)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -151,6 +168,7 @@ onMounted(loadVehicles);
         <label><span><input v-model="form.featured" type="checkbox"> Featured</span></label>
         <label><span><input v-model="form.private_sale" type="checkbox"> Private sale</span></label>
         <button class="btn primary full" :disabled="saving">{{ saving ? 'Saving...' : 'Save vehicle' }}</button>
+        <p v-if="error" class="form-error">{{ error }}</p>
         <p v-if="notice" class="success-note">{{ notice }}</p>
       </form>
     </div>

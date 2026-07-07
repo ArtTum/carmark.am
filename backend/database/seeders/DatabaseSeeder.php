@@ -61,6 +61,83 @@ class DatabaseSeeder extends Seeder
                 'ru' => 'Ереван, ул. Ханджяна 41',
             ],
             'languages' => ['hy', 'en', 'ru'],
+            'navigation' => [
+                'buy_link' => ['label_key' => 'nav.buy', 'to' => '/inventory'],
+                'inventory_link' => ['label_key' => 'nav.inventory', 'to' => '/inventory', 'query' => ['private_sale' => '1']],
+                'mobile_menu' => [
+                    ['label_key' => 'nav.about', 'to' => '/about'],
+                    ['label_key' => 'nav.services', 'to' => '/services'],
+                    ['label_key' => 'nav.how', 'to' => '/how-to-buy'],
+                    ['label_key' => 'nav.contact', 'to' => '/contact'],
+                ],
+                'auction_dropdown' => [
+                    ['label' => ['en' => 'Current auctions'], 'to' => '/auctions', 'query' => ['tab' => 'current']],
+                    ['label' => ['en' => 'Upcoming auctions'], 'to' => '/auctions', 'query' => ['tab' => 'upcoming']],
+                    ['label' => ['en' => 'Copart auctions'], 'to' => '/inventory', 'query' => ['auction' => 'Copart']],
+                    ['label' => ['en' => 'IAAI auctions'], 'to' => '/inventory', 'query' => ['auction' => 'IAAI']],
+                ],
+                'company_dropdown' => [
+                    ['label_key' => 'nav.about', 'to' => '/about'],
+                    ['label_key' => 'nav.services', 'to' => '/services'],
+                    ['label_key' => 'nav.how', 'to' => '/how-to-buy'],
+                    ['label_key' => 'nav.contact', 'to' => '/contact'],
+                    ['label' => ['en' => 'FAQs'], 'to' => '/faqs'],
+                ],
+            ],
+            'footer' => [
+                'copyright_year' => 2023,
+                'copyright' => ['en' => 'All rights reserved'],
+                'columns' => [
+                    [
+                        'title_key' => 'nav.company',
+                        'links' => [
+                            ['label' => ['en' => 'Home'], 'to' => '/'],
+                            ['label_key' => 'nav.about', 'to' => '/about'],
+                            ['label_key' => 'nav.services', 'to' => '/services'],
+                            ['label_key' => 'nav.how', 'to' => '/how-to-buy'],
+                        ],
+                    ],
+                    [
+                        'title' => ['en' => 'Vehicles'],
+                        'links' => [
+                            ['label' => ['en' => 'Cars'], 'to' => '/inventory'],
+                            ['label' => ['en' => 'Motorcycles'], 'to' => '/inventory?vehicle=motorcycle'],
+                            ['label' => ['en' => 'Trucks'], 'to' => '/inventory?vehicle=truck'],
+                            ['label' => ['en' => 'Buses'], 'to' => '/inventory?vehicle=bus'],
+                        ],
+                    ],
+                    [
+                        'title_key' => 'nav.auctions',
+                        'links' => [
+                            ['label' => ['en' => 'Current'], 'to' => '/auctions'],
+                            ['label' => ['en' => 'Upcoming'], 'to' => '/auctions?status=upcoming'],
+                            ['label_key' => 'nav.inventory', 'to' => '/inventory?private_sale=1'],
+                            ['label_key' => 'btn.buy', 'to' => '/inventory?buy_now=1'],
+                        ],
+                    ],
+                    [
+                        'title' => ['en' => 'Support'],
+                        'links' => [
+                            ['label_key' => 'nav.contact', 'to' => '/contact'],
+                            ['label_key' => 'nav.calculator', 'to' => '/calculator'],
+                            ['label' => ['en' => 'FAQs'], 'to' => '/faqs'],
+                        ],
+                    ],
+                ],
+                'social_links' => [
+                    ['label' => 'Facebook', 'icon' => 'facebook', 'href' => '#'],
+                    ['label' => 'Instagram', 'icon' => 'instagram', 'href' => '#'],
+                    ['label' => 'Youtube', 'icon' => 'youtube', 'href' => '#'],
+                ],
+            ],
+            'brand_logos' => [
+                'Dodge' => '/assets/home/brands/dodge.svg',
+                'Mercedes-Benz' => '/assets/home/brands/mercedes-benz.svg',
+                'Toyota' => '/assets/home/brands/toyota.svg',
+                'Mazda' => '/assets/home/brands/mazda.svg',
+                'Audi' => '/assets/home/brands/audi.svg',
+            ],
+            'copy' => [],
         ];
     }
 
@@ -105,6 +182,42 @@ class DatabaseSeeder extends Seeder
                     'en' => 'Choose a car, send a request, approve the estimate, bid and track shipping milestones.',
                     'ru' => 'Выберите авто, отправьте заявку, подтвердите расчет, участвуйте в торгах и отслеживайте доставку.',
                 ],
+            ],
+            [
+                'slug' => 'home',
+                'title' => [
+                    'hy' => 'Գլխավոր',
+                    'en' => 'Home',
+                    'ru' => 'Главная',
+                ],
+                'body' => [],
+            ],
+            [
+                'slug' => 'contact',
+                'title' => [
+                    'hy' => 'Կապ մեզ հետ',
+                    'en' => 'Contact',
+                    'ru' => 'Контакты',
+                ],
+                'body' => [],
+            ],
+            [
+                'slug' => 'faqs',
+                'title' => [
+                    'hy' => 'Հաճախ տրվող հարցեր',
+                    'en' => 'FAQs',
+                    'ru' => 'FAQ',
+                ],
+                'body' => [],
+            ],
+            [
+                'slug' => 'calculator',
+                'title' => [
+                    'hy' => 'Հաշվիչ',
+                    'en' => 'Calculator',
+                    'ru' => 'Калькулятор',
+                ],
+                'body' => [],
             ],
         ];
     }

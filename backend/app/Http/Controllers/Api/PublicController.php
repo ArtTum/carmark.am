@@ -42,6 +42,10 @@ class PublicController extends Controller
             $query->where('private_sale', true);
         }
 
+        if ($request->boolean('buy_now')) {
+            $query->whereNotNull('buy_now')->where('buy_now', '>', 0);
+        }
+
         if ($request->filled('year_from')) {
             $query->where('year', '>=', (int) $request->input('year_from'));
         }
@@ -73,6 +77,7 @@ class PublicController extends Controller
                 'models' => Vehicle::query()->where('status', 'published')->distinct()->orderBy('model')->pluck('model'),
                 'bodies' => Vehicle::query()->where('status', 'published')->distinct()->orderBy('body')->pluck('body'),
                 'auctions' => Vehicle::query()->where('status', 'published')->distinct()->orderBy('auction')->pluck('auction'),
+                'fuels' => Vehicle::query()->where('status', 'published')->distinct()->orderBy('fuel')->pluck('fuel'),
             ],
         ]);
     }
