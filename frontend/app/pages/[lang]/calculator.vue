@@ -26,6 +26,8 @@ const auctionDefaults: Record<AuctionName, number> = {
   Copart: 520,
 };
 
+const auctionChoices: AuctionName[] = ['IAAI', 'Copart'];
+
 const auctionLocations = [
   'AL-DOTHAN',
   'CA-LOS ANGELES',
@@ -179,12 +181,13 @@ async function downloadPdf(variant: PdfVariant) {
 
   pdfPending.value = variant;
   pdfError.value = '';
+  let mount: HTMLDivElement | null = null;
 
   try {
-    const module = await import('html2pdf.js') as any;
-    const html2pdf = module.default || module;
+    const html2pdfModule = await import('html2pdf.js') as any;
+    const html2pdf = html2pdfModule.default || html2pdfModule;
     const data = pdfVariants.value[variant];
-    const mount = document.createElement('div');
+    mount = document.createElement('div');
     mount.className = 'calculator-pdf-render-root';
     mount.innerHTML = `
       <section class="calculator-pdf-document">
@@ -216,7 +219,7 @@ async function downloadPdf(variant: PdfVariant) {
     `;
 
     document.body.appendChild(mount);
-    await html2pdf()
+    const worker = html2pdf()
       .set({
         filename: data.fileName,
         margin: 0,
@@ -225,11 +228,21 @@ async function downloadPdf(variant: PdfVariant) {
         jsPDF: { unit: 'px', format: [820, 1120], orientation: 'portrait' },
       })
       .from(mount.firstElementChild)
-      .save();
-    mount.remove();
+      .toPdf();
+    const blob = await worker.outputPdf('blob');
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = data.fileName;
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   } catch {
     pdfError.value = 'PDF-ը ներբեռնել չհաջողվեց։ Փորձեք կրկին։';
   } finally {
+    mount?.remove();
     pdfPending.value = '';
   }
 }
@@ -253,14 +266,14 @@ async function downloadPdf(variant: PdfVariant) {
           <span>Աճուրդ</span>
           <div class="calculator-auction-row">
             <button
-              v-for="auction in (['IAAI', 'Copart'] as AuctionName[])"
+              v-for="auction in auctionChoices"
               :key="auction"
               class="calculator-auction-choice"
               :class="{ active: form.auction === auction, copart: auction === 'Copart' }"
               type="button"
               @click="selectAuction(auction)"
             >
-              <span v-if="auction === 'IAAI'" class="iaai-logo">IA<span>A</span></span>
+              <span v-if="auction === 'IAAI'" class="iaai-logo">IA<span>AI</span></span>
               <span v-else class="copart-logo">Copart</span>
             </button>
             <input v-model.number="form.auctionFee" type="number" min="0" inputmode="numeric" aria-label="Աճուրդի միջնորդավճար">
