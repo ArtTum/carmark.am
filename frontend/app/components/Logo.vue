@@ -1,7 +1,6 @@
 <template>
   <NuxtLink class="brand" :to="to">
-    <span class="brand-mark" />
-    <span>carmark</span>
+    <img src="/assets/carmark-logo.svg" alt="CarMark">
   </NuxtLink>
 </template>
 

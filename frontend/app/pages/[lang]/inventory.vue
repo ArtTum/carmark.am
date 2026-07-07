@@ -7,6 +7,8 @@ const form = reactive({
   q: String(route.query.q || ''),
   make: String(route.query.make || ''),
   model: String(route.query.model || ''),
+  year_from: String(route.query.year_from || ''),
+  year_to: String(route.query.year_to || ''),
   body: String(route.query.body || ''),
   auction: String(route.query.auction || ''),
   sort: String(route.query.sort || ''),
@@ -20,6 +22,8 @@ watch(() => route.query, (query) => {
     q: String(query.q || ''),
     make: String(query.make || ''),
     model: String(query.model || ''),
+    year_from: String(query.year_from || ''),
+    year_to: String(query.year_to || ''),
     body: String(query.body || ''),
     auction: String(query.auction || ''),
     sort: String(query.sort || ''),
@@ -36,7 +40,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  Object.assign(form, { q: '', make: '', model: '', body: '', auction: '', sort: '' });
+  Object.assign(form, { q: '', make: '', model: '', year_from: '', year_to: '', body: '', auction: '', sort: '' });
   return applyFilters();
 }
 </script>
@@ -66,6 +70,21 @@ function resetFilters() {
                 <option value="">All makes</option>
                 <option v-for="make in filters.makes" :key="make" :value="make">{{ make }}</option>
               </select>
+            </label>
+            <label class="field">
+              <span>Model</span>
+              <select v-model="form.model">
+                <option value="">All models</option>
+                <option v-for="model in filters.models" :key="model" :value="model">{{ model }}</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Year from</span>
+              <input v-model="form.year_from" type="number" min="1960" max="2024" placeholder="1960">
+            </label>
+            <label class="field">
+              <span>Year to</span>
+              <input v-model="form.year_to" type="number" min="1960" max="2024" placeholder="2024">
             </label>
             <label class="field">
               <span>Body</span>

@@ -10,14 +10,22 @@ const copy: Record<string, Record<Lang, string>> = {
   'nav.contact': { hy: 'Կապ մեզ հետ', en: 'Contact', ru: 'Контакты' },
   'nav.account': { hy: 'Հաշիվ', en: 'Account', ru: 'Кабинет' },
   'hero.title': { hy: 'Ապահովագրական ավտո աճուրդ', en: 'Insurance auto auctions', ru: 'Страховые автоаукционы' },
-  'hero.copy': { hy: 'Ապահովի համար լավագույն գները՝ առանց ժամանակ կորցնելու, բաց և հարմար workflow-ով։', en: 'Find auction cars, calculate the full landed cost and manage the purchase from one place.', ru: 'Подбирайте авто с аукционов, считайте полную стоимость и ведите покупку в одном месте.' },
-  'search.placeholder': { hy: 'Որոնել մեքենաներ ըստ մակնիշի, մոդելի ...', en: 'Search by make, model or lot ...', ru: 'Поиск по марке, модели или лоту ...' },
+  'hero.copy': {
+    hy: 'Գտեք աճուրդային մեքենաներ, հաշվարկեք վերջնական արժեքը և կառավարեք գնման ընթացքը մեկ տեղից։',
+    en: 'Find auction cars, calculate the full landed cost and manage the purchase from one place.',
+    ru: 'Подбирайте авто с аукционов, считайте полную стоимость и ведите покупку в одном месте.',
+  },
+  'search.placeholder': {
+    hy: 'Որոնել մեքենաներ ըստ մակնիշի, մոդելի կամ լոտի ...',
+    en: 'Search by make, model or lot ...',
+    ru: 'Поиск по марке, модели или лоту ...',
+  },
   'home.featured': { hy: 'Ամենապահանջված մեքենաները', en: 'Featured vehicles', ru: 'Популярные автомобили' },
   'home.auctions': { hy: 'Մոտակա և ընթացիկ աճուրդները', en: 'Upcoming auctions', ru: 'Ближайшие аукционы' },
-  'home.private': { hy: 'Առկա տեսականի', en: 'Private inventory', ru: 'Частные предложения' },
+  'home.private': { hy: 'Առկա տեսականին', en: 'Private inventory', ru: 'Авто в наличии' },
   'home.brands': { hy: 'Մեքենաների վաճառք ըստ մակնիշի', en: 'Shop by brand', ru: 'Поиск по бренду' },
   'home.services': { hy: 'Բոլոր ծառայությունները մեկ վայրում', en: 'Every service in one place', ru: 'Все услуги в одном месте' },
-  'inventory.title': { hy: 'Առաջարկվող ֆիլտրեր', en: 'Inventory', ru: 'Каталог' },
+  'inventory.title': { hy: 'Ավտոմեքենաների կատալոգ', en: 'Inventory', ru: 'Каталог' },
   'inventory.filters': { hy: 'Ֆիլտրեր', en: 'Filters', ru: 'Фильтры' },
   'btn.search': { hy: 'Որոնել', en: 'Search', ru: 'Искать' },
   'btn.details': { hy: 'Մանրամասն', en: 'Details', ru: 'Подробнее' },
@@ -44,7 +52,9 @@ export function useT() {
 
 export function localize(value: any, lang = useLang().value): string {
   if (!value || typeof value !== 'object') return String(value || '');
-  return value[lang] || value.en || Object.values(value)[0] || '';
+  const preferred = value[lang];
+  if (typeof preferred === 'string' && !/[ÔÕÖÐÑ]/.test(preferred)) return preferred;
+  return value.en || Object.values(value).find((item) => typeof item === 'string' && !/[ÔÕÖÐÑ]/.test(item)) || '';
 }
 
 export function money(value: number | string | null | undefined): string {
@@ -59,4 +69,3 @@ export function langPath(path = ''): string {
   const lang = useLang();
   return `/${lang.value}${path.startsWith('/') ? path : `/${path}`}`.replace(/\/$/, '');
 }
-

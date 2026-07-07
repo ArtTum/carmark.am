@@ -10,4 +10,3 @@ const isAdmin = computed(() => route.path.startsWith('/admin'));
     <SiteFooter v-if="!isAdmin" />
   </div>
 </template>
-
