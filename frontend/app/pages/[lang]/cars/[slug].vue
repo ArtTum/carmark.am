@@ -358,8 +358,16 @@ onBeforeUnmount(() => {
                   @keydown.enter.prevent="openGalleryModal()"
                   @keydown.space.prevent="openGalleryModal()"
                 >
-                <button class="gallery-nav prev" type="button" @click="changeImage(-1)">‹</button>
-                <button class="gallery-nav next" type="button" @click="changeImage(1)">›</button>
+                <button class="gallery-nav prev" type="button" aria-label="Նախորդ նկար" @click="changeImage(-1)">
+                  <svg width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+                    <path d="M6 11L1 6L6 1" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <button class="gallery-nav next" type="button" aria-label="Հաջորդ նկար" @click="changeImage(1)">
+                  <svg width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+                    <path d="M1 11L6 6L1 1" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
                 <span class="image-count-badge large">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h2l1.4-1.5h5.2L16 5h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" /><path d="M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" /></svg>
                   {{ images.length }}
@@ -556,8 +564,16 @@ onBeforeUnmount(() => {
         <div class="gallery-modal-shell">
           <div class="gallery-modal-image-wrap">
             <img class="gallery-modal-image" :src="mainImage" :alt="title">
-            <button class="gallery-modal-nav prev" type="button" aria-label="Նախորդ նկար" @click="changeImage(-1)">‹</button>
-            <button class="gallery-modal-nav next" type="button" aria-label="Հաջորդ նկար" @click="changeImage(1)">›</button>
+            <button class="gallery-modal-nav prev" type="button" aria-label="Նախորդ նկար" @click="changeImage(-1)">
+              <svg width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+                <path d="M6 11L1 6L6 1" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button class="gallery-modal-nav next" type="button" aria-label="Հաջորդ նկար" @click="changeImage(1)">
+              <svg width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+                <path d="M1 11L6 6L1 1" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
           </div>
 
           <div class="gallery-modal-thumbs" aria-label="Մեքենայի նկարներ">

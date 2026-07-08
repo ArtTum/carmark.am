@@ -291,10 +291,14 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="menu-wrap">
-            <button class="menu-pill" type="button" :aria-label="t('nav.company')" :aria-expanded="menuOpen" @click="toggleMenu">
-              <span class="hamburger-lines" aria-hidden="true"><span /><span /><span /></span>
-              <span class="menu-dot" aria-hidden="true" />
-            </button>
+            <div class="menu-pill">
+              <button class="menu-lines-button" type="button" :aria-label="t('nav.company')" :aria-expanded="menuOpen" @click="toggleMenu">
+                <span class="hamburger-lines" aria-hidden="true"><span /><span /><span /></span>
+              </button>
+              <button class="menu-dot-button" type="button" :aria-label="t('nav.account')" :aria-expanded="accountOpen" @click="toggleAccount">
+                <span class="menu-dot" aria-hidden="true" />
+              </button>
+            </div>
 
             <nav v-if="menuOpen" class="main-menu-popover">
               <NuxtLink v-for="item in menuLinks" :key="item.to" :to="localized(item.to)" @click="menuOpen = false">

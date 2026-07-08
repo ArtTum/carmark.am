@@ -112,7 +112,7 @@ class AuthController extends Controller
             DB::table('password_reset_tokens')->updateOrInsert(
                 ['email' => $email],
                 [
-                    'token_hash' => hash('sha256', $plainToken),
+                    'token' => hash('sha256', $plainToken),
                     'expires_at' => now()->addMinutes(30),
                     'created_at' => now(),
                 ],
@@ -141,8 +141,8 @@ class AuthController extends Controller
 
         if (
             !$reset
-            || !hash_equals($reset->token_hash, hash('sha256', $data['token']))
-            || now()->greaterThan($reset->expires_at)
+            || !hash_equals($reset->token, hash('sha256', $data['token']))
+            || ($reset->expires_at && now()->greaterThan($reset->expires_at))
         ) {
             return response()->json(['message' => 'Password reset link is invalid or expired.'], 422);
         }

@@ -144,9 +144,30 @@ const fallbackVehicles = [
   },
 ];
 
+function vehicleKey(vehicle: any) {
+  return String(vehicle?.id ?? vehicle?.slug ?? '');
+}
+
+function fillVehicleRow(list: any[], source: any[], count: number) {
+  const result = [...list];
+  const used = new Set(result.map(vehicleKey).filter(Boolean));
+
+  for (const vehicle of source) {
+    if (result.length >= count) break;
+
+    const key = vehicleKey(vehicle);
+    if (key && used.has(key)) continue;
+
+    result.push(vehicle);
+    if (key) used.add(key);
+  }
+
+  return result.slice(0, count);
+}
+
 const vehiclePool = computed(() => vehicles.value.length >= 6 ? vehicles.value : fallbackVehicles);
 const featuredVehicles = computed(() => vehiclePool.value.slice(0, 3));
-const privateVehicles = computed(() => vehiclePool.value.slice(3, 7));
+const privateVehicles = computed(() => fillVehicleRow(vehiclePool.value.slice(3, 7), vehiclePool.value, 4));
 const makeOptions = computed(() => Array.from(new Set([...defaultMakes, ...vehicles.value.map((vehicle: any) => vehicle.make).filter(Boolean)])));
 const modelOptions = computed(() => {
   if (!search.make) return Array.from(new Set(Object.values(defaultModelsByMake).flat()));
@@ -159,6 +180,8 @@ const yearToOptions = ['2024', '2023', '2022', '2021', '2020', '2019', '2018', '
 type SearchFilter = 'make' | 'model' | 'year_from' | 'year_to';
 const openFilter = ref<SearchFilter | null>(null);
 const filterQuery = ref('');
+const auctionClock = ref(new Date());
+let auctionTimer: ReturnType<typeof setInterval> | undefined;
 
 const filteredMakes = computed(() => filterByQuery(makeOptions.value));
 const filteredModels = computed(() => filterByQuery(modelOptions.value));
@@ -190,6 +213,12 @@ const fallbackAuctionCards = [
     lots_count: 556,
     image: '/assets/home/showcase/auction-atlanta-north.png',
   },
+];
+
+const knownAuctionImages = [
+  { match: 'ashland', image: '/assets/home/showcase/auction-ashland.png' },
+  { match: 'los angeles', image: '/assets/home/showcase/auction-los-angeles.png' },
+  { match: 'atlanta', image: '/assets/home/showcase/auction-atlanta-north.png' },
 ];
 
 const brandLogos: Record<string, string> = {
@@ -328,12 +357,38 @@ function auctionDate(value: string) {
   return `${months[date.getMonth()]} ${date.getDate()}`;
 }
 
+function auctionCountdown(value: string) {
+  const target = new Date(value).getTime();
+  if (!Number.isFinite(target)) return '0օր, 0ժ, 00ր';
+
+  const diff = Math.max(0, target - auctionClock.value.getTime());
+  const days = Math.floor(diff / 86_400_000);
+  const hours = Math.floor((diff % 86_400_000) / 3_600_000);
+  const minutes = Math.floor((diff % 3_600_000) / 60_000);
+
+  return `${days}օր, ${hours}ժ, ${String(minutes).padStart(2, '0')}ր`;
+}
+
+function auctionImage(auction: any) {
+  const image = String(auction?.image || '');
+  const name = String(auction?.name || '').toLowerCase();
+  const known = knownAuctionImages.find((item) => name.includes(item.match));
+
+  if ((!image || image.includes('/assets/extracted/')) && known) return known.image;
+  return image || known?.image || '/assets/home/showcase/auction-ashland.png';
+}
+
 onMounted(() => {
+  auctionClock.value = new Date();
+  auctionTimer = setInterval(() => {
+    auctionClock.value = new Date();
+  }, 60_000);
   document.addEventListener('pointerdown', handleHomePointerdown);
   document.addEventListener('keydown', handleHomeKeydown);
 });
 
 onBeforeUnmount(() => {
+  if (auctionTimer) clearInterval(auctionTimer);
   document.removeEventListener('pointerdown', handleHomePointerdown);
   document.removeEventListener('keydown', handleHomeKeydown);
 });
@@ -468,16 +523,26 @@ onBeforeUnmount(() => {
           <h2>{{ localize(sectionTitles.auctions) || t('home.auctions') }}</h2>
         </div>
         <div class="grid auction-lot-grid">
-          <NuxtLink v-for="auction in renderedAuctionCards" :key="auction.id || auction.name" class="auction-lot-card" :to="`/${lang}/auctions`">
-            <img :src="auction.image" :alt="auction.name">
-            <span class="auction-lot-content">
-              <strong>{{ auction.name }}</strong>
-              <small>{{ auction.address }}</small>
-              <em class="auction-card-meta">
-                <span class="auction-date">{{ auctionDate(auction.starts_at) }}</span>
-                <span>{{ auction.lots_count }} մեքենա</span>
-                <span class="auction-open">{{ t('btn.details') }}</span>
-              </em>
+          <NuxtLink v-for="(auction, index) in renderedAuctionCards" :key="auction.id || auction.name" class="auction-lot-card" :to="`/${lang}/auctions`">
+            <span class="auction-lot-main">
+              <span class="auction-lot-media">
+                <img :src="auctionImage(auction)" :alt="auction.name">
+              </span>
+              <span class="auction-lot-content">
+                <strong>{{ auction.name }}</strong>
+                <small>{{ auction.address }}</small>
+              </span>
+            </span>
+            <span class="auction-card-meta">
+              <span class="auction-day">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M17.5 14.375V7.5H2.5V14.375C2.5 15.2038 2.82924 15.9987 3.41529 16.5847C4.00134 17.1708 4.7962 17.5 5.625 17.5H14.375C15.2038 17.5 15.9987 17.1708 16.5847 16.5847C17.1708 15.9987 17.5 15.2038 17.5 14.375ZM17.5 5.625C17.5 4.7962 17.1708 4.00134 16.5847 3.41529C15.9987 2.82924 15.2038 2.5 14.375 2.5H5.625C4.7962 2.5 4.00134 2.82924 3.41529 3.41529C2.82924 4.00134 2.5 4.7962 2.5 5.625V6.25H17.5V5.625Z" fill="currentColor" />
+                </svg>
+                <span>{{ auctionDate(auction.starts_at) }}</span>
+              </span>
+              <span class="auction-countdown">{{ auctionCountdown(auction.starts_at) }}</span>
+              <span class="auction-vehicles">{{ auction.lots_count }} մեքենա</span>
+              <span class="auction-open" :class="{ primary: index === 0 }">{{ t('btn.details') }}</span>
             </span>
           </NuxtLink>
         </div>

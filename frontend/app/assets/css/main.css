@@ -486,8 +486,29 @@ textarea {
   border: 1px solid #d8e0eb;
   border-radius: 999px;
   background: #f7f9fc;
-  cursor: pointer;
   padding: 0 6px 0 14px;
+}
+
+.menu-lines-button,
+.menu-dot-button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.menu-lines-button {
+  min-width: 22px;
+  min-height: 34px;
+}
+
+.menu-dot-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
 }
 
 .main-menu-popover {
@@ -861,12 +882,12 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
+  min-height: 44px;
   border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 10px 16px;
+  border-radius: 999px;
+  padding: 0 20px;
   cursor: pointer;
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1;
   transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
@@ -897,7 +918,7 @@ textarea {
 
 .btn.small {
   min-height: 36px;
-  padding: 8px 12px;
+  padding: 0 14px;
   font-size: 13px;
 }
 
@@ -986,7 +1007,8 @@ textarea {
   place-items: center;
   border: 0;
   border-radius: 999px;
-  background: transparent;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.18);
   cursor: pointer;
   padding: 0;
   transform: translateY(-50%);
@@ -994,9 +1016,8 @@ textarea {
 
 .slider-btn svg {
   display: block;
-  width: 32px;
-  height: 32px;
-  filter: drop-shadow(0 8px 18px rgba(16, 24, 40, 0.18));
+  width: 7px;
+  height: 12px;
 }
 
 .slider-prev {
@@ -1891,12 +1912,6 @@ textarea {
   text-align: left;
 }
 
-.select-trigger::after {
-  content: "⌄";
-  color: #98a2b3;
-  font-weight: 900;
-}
-
 .filter-popover {
   position: absolute;
   top: calc(100% + 14px);
@@ -1929,10 +1944,6 @@ textarea {
 .filter-popover button.active {
   background: #f5f7fb;
   color: var(--brand);
-}
-
-.select-trigger::after {
-  content: "v";
 }
 
 .filter-popover {
@@ -2223,92 +2234,131 @@ textarea {
 
 .auction-lot-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 28px;
 }
 
 .auction-lot-card {
   display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
-  gap: 10px;
-  align-items: start;
-  min-height: 0;
-  border: 1px solid #eef1f5;
-  border-radius: 8px;
-  background: #fff;
-  padding: 8px;
-  box-shadow: 0 8px 22px rgba(17, 24, 39, 0.04);
+  gap: 16px;
+  align-content: space-between;
+  min-height: 201px;
+  border: 0;
+  border-radius: 10px;
+  background: #f9fafb;
+  color: #101828;
+  padding: 20px;
+  box-shadow: none;
+}
+
+.auction-lot-main {
+  display: grid;
+  grid-template-columns: 156px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  min-width: 0;
+}
+
+.auction-lot-media {
+  display: block;
+  min-width: 0;
 }
 
 .auction-lot-card img {
-  width: 112px;
-  height: 74px;
-  border-radius: 6px;
+  display: block;
+  width: 156px;
+  height: 118px;
+  border-radius: 5px;
   object-fit: cover;
   background: #eef2f7;
 }
 
 .auction-lot-card strong {
   display: block;
-  margin-bottom: 3px;
-  color: #1d2939;
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1.22;
+  margin-bottom: 8px;
+  color: #101828;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.32;
 }
 
 .auction-lot-content {
   display: grid;
   min-width: 0;
-  gap: 4px;
-  color: #667085;
-  font-size: 10px;
+  gap: 0;
 }
 
 .auction-lot-card small {
-  display: -webkit-box;
-  overflow: hidden;
+  display: block;
   color: #667085;
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1.25;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  line-height: 1.48;
 }
 
 .auction-card-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
   min-width: 0;
-  margin-top: 3px;
   color: #667085;
-  font-size: 9px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 800;
   line-height: 1;
   white-space: nowrap;
 }
 
-.auction-date {
+.auction-day {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  color: #ed1c24;
+  gap: 4px;
+  color: #101828;
+  font-weight: 900;
 }
 
-.auction-date svg {
-  width: 10px;
-  height: 10px;
+.auction-day svg {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.auction-countdown {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #fff1f3;
+  color: #ed1c24;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.auction-vehicles {
+  min-width: 0;
+  overflow: hidden;
+  color: #667085;
+  text-overflow: ellipsis;
 }
 
 .auction-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-left: auto;
+  min-width: 74px;
+  border: 1px solid #d0d5dd;
   border-radius: 999px;
+  background: #fff;
+  color: #101828;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.auction-open.primary {
+  border-color: #ed1c24;
   background: #ed1c24;
   color: #fff;
-  padding: 4px 8px;
-  font-size: 8px;
-  font-weight: 900;
 }
 
 .brand-section .section-head {
@@ -2950,6 +3000,15 @@ textarea {
     padding: 0 6px 0 12px;
   }
 
+  .menu-lines-button {
+    min-height: 32px;
+  }
+
+  .menu-dot-button {
+    width: 32px;
+    height: 32px;
+  }
+
   .hamburger-lines span {
     width: 22px;
     height: 2px;
@@ -3167,14 +3226,28 @@ textarea {
   }
 
   .auction-lot-card {
+    min-height: 0;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .auction-lot-main {
     grid-template-columns: 110px minmax(0, 1fr);
-    min-height: 112px;
     gap: 12px;
   }
 
   .auction-lot-card img {
     width: 110px;
     height: 78px;
+  }
+
+  .auction-card-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .auction-open {
+    margin-left: 0;
   }
 
   .brand-strip a,
@@ -3417,7 +3490,12 @@ button:disabled {
 }
 
 .link-more::after {
-  content: "→";
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin-left: 0;
+  background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 8H15M8 15L15 8L8 1' stroke='%23101828' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  content: "";
 }
 
 .home-page .section-head h2 {
@@ -3617,7 +3695,6 @@ button:disabled {
   width: min(1340px, calc(100% - 72px));
 }
 
-.inventory-shell h1,
 .auction-shell h1,
 .profile-content h1 {
   margin: 0 0 28px;
@@ -3625,7 +3702,42 @@ button:disabled {
   line-height: 1.1;
 }
 
-.inventory-tabs,
+.inventory-shell h1 {
+  margin: 0 0 14px;
+  color: #101828;
+  font-size: clamp(18px, 1.8vw, 22px);
+  line-height: 1.25;
+}
+
+.inventory-tabs {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 26px;
+  overflow-x: auto;
+  padding: 0 0 2px;
+  scrollbar-width: none;
+}
+
+.inventory-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.inventory-tabs::after {
+  position: sticky;
+  right: 0;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #eef1f6 url("data:image/svg+xml,%3Csvg width='10' height='18' viewBox='0 0 10 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 2L8.5 9L1.5 16' stroke='%23101828' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 10px 18px no-repeat;
+  box-shadow: -18px 0 18px rgba(255, 255, 255, 0.92);
+  content: "";
+  pointer-events: none;
+}
+
 .auction-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -3633,7 +3745,20 @@ button:disabled {
   margin-bottom: 40px;
 }
 
-.inventory-tabs button,
+.inventory-tabs button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  border: 1px solid #d7dde8;
+  border-radius: 999px;
+  background: #fff;
+  color: #344054;
+  cursor: pointer;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
 .auction-tabs button {
   min-height: 46px;
   border: 1px solid #d7dde8;
@@ -3646,7 +3771,12 @@ button:disabled {
   font-weight: 900;
 }
 
-.inventory-tabs button.active,
+.inventory-tabs button.active {
+  border-color: #101828;
+  background: #101828;
+  color: #fff;
+}
+
 .auction-tabs button.active {
   border-color: #101828;
   background: #101828;
@@ -3709,68 +3839,106 @@ button:disabled {
 
 .inventory-results {
   min-width: 0;
+  overflow: visible;
+  position: relative;
+  z-index: 2;
 }
 
 .inventory-toolbar {
-  display: flex;
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 14px;
+  gap: 18px 24px;
+  margin-bottom: 16px;
+  overflow: visible;
 }
 
-.inventory-toolbar div {
+.inventory-toolbar-main {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  color: #667085;
-  font-weight: 800;
+  min-width: 0;
+  align-items: center;
+  gap: 22px;
 }
 
-.inventory-toolbar div strong {
+.inventory-result-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  color: #101828;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.inventory-result-count strong {
   color: #101828;
 }
 
-.inventory-toolbar label {
+.inventory-sort-control {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-end;
+  gap: 14px;
   color: #667085;
   font-size: 13px;
   font-weight: 800;
+  overflow: visible;
+  white-space: nowrap;
 }
 
-.inventory-toolbar select {
-  min-width: 178px;
-  border: 1px solid #dce2eb;
-  border-radius: 999px;
-  padding: 10px 14px;
+.inventory-sort-control > span {
+  flex: 0 0 auto;
 }
 
 .save-search-btn {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border: 1px solid var(--danger);
   border-radius: 999px;
   background: #fff;
   color: var(--danger);
   cursor: pointer;
-  padding: 10px 16px;
+  padding: 0 18px;
+  font-size: 14px;
   font-weight: 900;
+  white-space: nowrap;
+  transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.save-search-btn:hover {
+  background: rgba(237, 28, 36, 0.04);
+  box-shadow: 0 10px 24px rgba(237, 28, 36, 0.11);
+  transform: translateY(-1px);
+}
+
+.save-search-btn svg {
+  flex: 0 0 auto;
 }
 
 .active-filter-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin: -4px 0 18px;
 }
 
 .active-filter-row button {
-  border: 0;
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d7dde8;
   border-radius: 999px;
-  background: #f2f4f7;
+  background: #fff;
   color: #667085;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 0 14px 0 16px;
   font-weight: 800;
 }
 
@@ -4161,10 +4329,17 @@ button:disabled {
   border: 0;
   border-radius: 999px;
   background: #fff;
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.18);
   color: #101828;
   cursor: pointer;
-  font-size: 28px;
   transform: translateY(-50%);
+}
+
+.gallery-nav svg,
+.gallery-modal-nav svg {
+  display: block;
+  width: 7px;
+  height: 12px;
 }
 
 .gallery-nav.prev {
@@ -4266,8 +4441,6 @@ button:disabled {
   background: rgba(255, 255, 255, 0.92);
   color: #101828;
   cursor: pointer;
-  font-size: 30px;
-  line-height: 1;
   opacity: 0;
   transform: translateY(-50%);
   transition: opacity 0.16s ease, background 0.16s ease;
@@ -4332,9 +4505,26 @@ button:disabled {
 
 .bid-form {
   display: grid;
-  grid-template-columns: 1fr 180px;
+  grid-template-columns: 1fr minmax(190px, 200px);
   gap: 14px;
   align-items: end;
+}
+
+.bid-form .btn.primary,
+.bid-panel > .btn.primary.full {
+  min-height: 44px;
+  border-radius: 999px;
+  padding: 0 24px;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.callback-card .btn.outline-red.full {
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 0 22px;
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .bid-panel label,
@@ -4370,14 +4560,14 @@ button:disabled {
 
 .app-select {
   position: relative;
-  z-index: 1;
+  z-index: 5;
   width: 100%;
   min-width: 0;
   color: #344054;
 }
 
 .app-select.open {
-  z-index: 1300;
+  z-index: 5000;
 }
 
 .app-select-trigger {
@@ -4430,7 +4620,7 @@ button:disabled {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  z-index: 1301;
+  z-index: 5001;
   width: 100%;
   min-width: 210px;
   max-height: 292px;
@@ -4565,7 +4755,25 @@ button:disabled {
 }
 
 .inventory-toolbar .toolbar-select {
-  min-width: 178px;
+  flex: 0 0 204px;
+  width: 204px;
+  min-width: 204px;
+}
+
+.inventory-toolbar .toolbar-select .app-select-trigger {
+  min-height: 48px;
+  border-color: #d7dde8;
+  padding: 0 15px 0 18px;
+}
+
+.inventory-toolbar .toolbar-select .app-select-trigger span {
+  color: #101828;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.inventory-toolbar .toolbar-select .app-select-popover {
+  min-width: 204px;
 }
 
 .contact-form textarea {
@@ -6111,6 +6319,28 @@ button:disabled {
   .pagination-row {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .inventory-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-toolbar-main {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .inventory-sort-control {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .inventory-toolbar .toolbar-select {
+    flex-basis: auto;
+    width: 100%;
+    min-width: 0;
   }
 
   .list-spec-grid {

@@ -223,7 +223,7 @@ const showMoreFilters = reactive<Record<FacetKey, boolean>>({
   fuel: false,
 });
 const sortOptions = [
-  { label: 'Ընթացիկ հայտ', value: '' },
+  { label: 'Ընթացիկ հայտը', value: '' },
   { label: 'Ցածր գին', value: 'price' },
   { label: 'Նոր տարեթիվ', value: 'year' },
 ];
@@ -638,20 +638,30 @@ function odometerNumber(value: unknown) {
 
           <div class="inventory-results">
             <div class="inventory-toolbar">
-              <div>
-                <strong>{{ filteredVehicles.length.toLocaleString('en-US') }}</strong>
-                <span>{{ t('inventory.results') }}</span>
+              <div class="inventory-toolbar-main">
+                <div class="inventory-result-count">
+                  <strong>{{ filteredVehicles.length.toLocaleString('en-US') }}</strong>
+                  <span>{{ t('inventory.results') }}</span>
+                </div>
+                <button class="save-search-btn" type="button" @click="saveSearch">
+                  <svg width="21" height="19" viewBox="0 0 23 20" fill="none" aria-hidden="true">
+                    <path d="M6.31055 0.800781H6.3291C8.08439 0.791775 9.75218 1.51194 10.9121 2.7666L11.5 3.40137L12.0879 2.7666C13.2478 1.51194 14.9156 0.791775 16.6709 0.800781H16.6895C18.1503 0.774683 19.5554 1.31766 20.5898 2.29883C21.6234 3.27921 22.2004 4.61427 22.2002 6.00098C22.2001 8.64038 20.5684 11.053 18.251 13.3281C17.1044 14.4537 15.8236 15.5136 14.5557 16.5234C13.5011 17.3634 12.4401 18.1829 11.502 18.957C10.5642 18.1764 9.5048 17.3536 8.44922 16.5117C7.18087 15.5001 5.89946 14.4413 4.75195 13.3174C2.4331 11.0462 0.799909 8.64179 0.799805 6.00098C0.799557 4.61431 1.37661 3.27922 2.41016 2.29883C3.44464 1.31765 4.84971 0.774684 6.31055 0.800781Z" stroke="currentColor" stroke-width="1.6" />
+                  </svg>
+                  <span>Պահպանել որոնումը</span>
+                </button>
               </div>
-              <button class="save-search-btn" type="button" @click="saveSearch">Պահպանել որոնումը</button>
-              <label>
-                Դասավորել ըստ
+              <label class="inventory-sort-control">
+                <span>Դասավորել ըստ</span>
                 <AppSelect v-model="form.sort" class="toolbar-select" :options="sortOptions" @change="applyFilters" />
               </label>
             </div>
 
             <div v-if="activeFilters.length" class="active-filter-row">
               <button v-for="[key, value] in activeFilters" :key="key" type="button" @click="clearFilter(key)">
-                {{ value }} x
+                <span>{{ value }}</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M9 3L3 9M3 3L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
               </button>
             </div>
             <p v-if="savedSearchNotice" class="success-note">{{ savedSearchNotice }}</p>

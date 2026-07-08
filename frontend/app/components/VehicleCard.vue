@@ -114,15 +114,13 @@ async function shareVehicle() {
 
       <template v-if="imageCount > 1">
         <button class="slider-btn slider-prev" type="button" aria-label="Previous image" @click.stop="changeSlide(-1)">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <rect width="32" height="32" rx="16" fill="white" />
-            <path d="M18.5 21L13.5 16L18.5 11" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+            <path d="M6 11L1 6L6 1" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </button>
         <button class="slider-btn slider-next" type="button" aria-label="Next image" @click.stop="changeSlide(1)">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <rect width="32" height="32" rx="16" fill="white" />
-            <path d="M13.5 21L18.5 16L13.5 11" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+            <path d="M1 11L6 6L1 1" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </button>
         <div class="slider-dots">
