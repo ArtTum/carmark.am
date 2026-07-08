@@ -339,8 +339,18 @@ onBeforeUnmount(() => {
           <div class="product-title-row">
             <h1>{{ title }}</h1>
             <div class="product-actions">
-              <button type="button" @click="shareVehicle">Կիսվել</button>
-              <button type="button" :class="{ active: saved }" @click="toggleSaved">{{ saved ? 'Պահպանված է' : 'Պահպանել' }}</button>
+              <button type="button" @click="shareVehicle">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M5.25 2.917H3.5A1.167 1.167 0 0 0 2.333 4.083v6.417A1.167 1.167 0 0 0 3.5 11.667h6.417a1.167 1.167 0 0 0 1.166-1.167V8.75M7 2.333h4.667M11.667 2.333V7M6.417 7.583l5.25-5.25" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Կիսվել</span>
+              </button>
+              <button type="button" :class="{ active: saved }" @click="toggleSaved">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3.95 2.333c-1.29 0-2.333 1.03-2.333 2.302 0 2.579 2.68 4.884 4.987 6.45a.71.71 0 0 0 .792 0c2.307-1.566 4.987-3.871 4.987-6.45 0-1.272-1.044-2.302-2.333-2.302-.746 0-1.45.344-1.893.93L7 4.785 5.843 3.263a2.38 2.38 0 0 0-1.893-.93Z" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>{{ saved ? 'Պահպանված է' : 'Պահպանել' }}</span>
+              </button>
             </div>
           </div>
           <p v-if="shareNote" class="success-note product-note">{{ shareNote }}</p>

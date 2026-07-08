@@ -4278,15 +4278,28 @@ button:disabled {
 
 .product-actions {
   display: flex;
-  gap: 16px;
+  align-items: center;
+  gap: 14px;
 }
 
 .product-actions button {
+  display: inline-flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 4px;
   border: 0;
   background: transparent;
   color: #344054;
   cursor: pointer;
-  font-weight: 900;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.product-actions button svg {
+  flex: 0 0 auto;
 }
 
 .product-actions button.active {
