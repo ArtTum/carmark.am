@@ -57,6 +57,104 @@ body {
   transform: translate3d(0, 0, 0) scale(1);
 }
 
+.route-loader {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(5px);
+  pointer-events: none;
+}
+
+.route-loader__glow {
+  position: absolute;
+  width: min(64vw, 720px);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(216, 25, 32, 0.16), rgba(216, 25, 32, 0) 68%);
+  animation: route-loader-glow 1.35s ease-in-out infinite alternate;
+}
+
+.route-loader__card {
+  position: relative;
+  display: grid;
+  width: min(284px, calc(100vw - 48px));
+  justify-items: center;
+  gap: 13px;
+  border: 1px solid rgba(216, 25, 32, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24px 60px rgba(17, 24, 39, 0.16);
+  padding: 28px 28px 25px;
+}
+
+.route-loader__logo {
+  width: 132px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.route-loader__label {
+  color: #667085;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.route-loader__track {
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf0f4;
+}
+
+.route-loader__bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #b80f17 0%, #ed1c24 52%, #ff7a7f 100%);
+  box-shadow: 0 0 12px rgba(237, 28, 36, 0.52);
+  transition: width 0.14s ease-out;
+}
+
+.route-loader-enter-active,
+.route-loader-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.route-loader-enter-active .route-loader__card,
+.route-loader-leave-active .route-loader__card {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.route-loader-enter-from,
+.route-loader-leave-to {
+  opacity: 0;
+}
+
+.route-loader-enter-from .route-loader__card,
+.route-loader-leave-to .route-loader__card {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
+
+@keyframes route-loader-glow {
+  from {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+
+  to {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -85,6 +183,18 @@ img {
   .layout-leave-to {
     opacity: 1;
     transform: none;
+  }
+
+  .route-loader__glow {
+    animation: none;
+  }
+
+  .route-loader-enter-active,
+  .route-loader-leave-active,
+  .route-loader-enter-active .route-loader__card,
+  .route-loader-leave-active .route-loader__card,
+  .route-loader__bar {
+    transition: none;
   }
 }
 

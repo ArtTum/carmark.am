@@ -11,6 +11,7 @@ onMounted(initAuth);
 
 <template>
   <div>
+    <RouteLoader />
     <SiteHeader v-if="!isAdmin && !isAuthScreen" />
     <NuxtPage />
     <SiteFooter v-if="!isAdmin && !isAuthScreen" />
